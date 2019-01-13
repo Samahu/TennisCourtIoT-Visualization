@@ -9,7 +9,7 @@ db_data = collect(db$find('{}'))
 
 db_summary <- db_data %>%
   group_by(DeviceID) %>%
-  summarise(latitude = mean(Latitude), longitude = mean(Longitude), events_count = n())
+  summarise(deviceName = first(DeviceName), latitude = mean(Latitude), longitude = mean(Longitude), events_count = n())
 
 tulsa_long_left = -96.069
 tulsa_long_right = -95.719

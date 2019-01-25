@@ -6,7 +6,7 @@ library(dplyr)
 library(htmltools)
 
 function(input, output, session) {
-  
+
   output$map <- renderLeaflet({
     leaflet() %>%
       addTiles(
@@ -23,5 +23,20 @@ function(input, output, session) {
     action <- DT::dataTableAjax(session, df)
     DT::datatable(df, options = list(ajax = list(url = action)), escape = FALSE)
 
+  })
+  
+  dataInput <- reactive({
+    dev_data <- db_data %>%
+      filter(DeviceID == input$deviceId)
+    dev_data$PersonCount <- lapply(dev_data$Classes, extractPersonCount)
+    
+    return (dev_data)
+  })
+  
+  output$tsplot <- renderPlot({
+    di <- dataInput()
+    x <- as.POSIXlt(di$DateTime)
+    plot(x, di$PersonCount, main = "Sample Time Series", xlab = "Time", ylab = "Persons")
+    lines(x, di$PersonCount, type="b", col="black")
   })
 }

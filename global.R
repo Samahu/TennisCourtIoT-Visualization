@@ -19,8 +19,9 @@ tulsa_lat_bottom = 35.923
 center_long_range = tulsa_long_left + 0.5 * abs(tulsa_long_right - tulsa_long_left)
 center_lat_range = tulsa_lat_bottom + 0.5 * abs(tulsa_lat_top - tulsa_lat_bottom)
 
-# m <- leaflet() %>%
-#   addTiles() %>%  # Add default OpenStreetMap map tiles
-#   addCircleMarkers(lng=db_summary$longitude, lat=db_summary$latitude, radius = db_summary$events_count)
-# 
-# m  # Print the map
+extractPersonCount <- function(x) {
+  v <- gsub("\'", "\"", x)
+  v <- jsonlite::fromJSON(v)
+  v <- ifelse(is.null(v$person), 0, as.numeric(v$person))
+  return (v)
+}

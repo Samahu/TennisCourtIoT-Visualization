@@ -1,5 +1,10 @@
 # TennisCourtIoT-Visualization
 Data Visualization for the TennisCourtIoT project, utilizing R programming, MongoDB and ShinyApps.
 
-Screen shot of current map view:
-![Screenshot](./misc/dashboard.png)
+Screenshots of the current dashboard:
+![Screenshot](./misc/dashboard_sample_1.png)
+
+![Screenshot](./misc/dashboard_sample_2.png)
+
+
+

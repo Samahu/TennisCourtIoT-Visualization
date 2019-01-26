@@ -6,6 +6,24 @@ library(dplyr)
 library(htmltools)
 
 function(input, output, session) {
+  
+  deviceData <- reactive({
+    
+    dev_data <- db_data %>%
+      filter(DeviceID == input$deviceId,
+             DateTimeT >= as.POSIXct(input$dates[1]),
+             DateTimeT <= as.POSIXct(input$dates[2]))
+    
+    dev_data$DateTimeS <- round_date(dev_data$DateTimeT, input$average)
+    
+    summary_func <- ifelse(TRUE, mean, sum)
+
+    dev_data_s <- dev_data %>%
+      group_by(DateTimeS) %>%
+      summarise(deviceName = first(DeviceName), PersonCountS = summary_func(PersonCount))
+    
+    return (dev_data_s)
+  })
 
   output$map <- renderLeaflet({
     leaflet() %>%
@@ -17,16 +35,6 @@ function(input, output, session) {
                        popup = htmlEscape(db_summary$deviceName))
   })
   
-  dataInput <- reactive({
-    
-    dev_data <- db_data %>%
-      filter(DeviceID == input$deviceId)
-    
-    dev_data$PersonCount <- lapply(dev_data$Classes, extractPersonCount)
-    
-    return (dev_data)
-  })
-  
   output$table <- DT::renderDataTable({
     df <- db_summary
     action <- DT::dataTableAjax(session, df)
@@ -34,9 +42,9 @@ function(input, output, session) {
   })
   
   output$tsplot <- renderPlot({
-    di <- dataInput()
-    x <- as.POSIXlt(di$DateTime)
-    plot(x, di$PersonCount, main = "Sample Time Series", xlab = "Time", ylab = "Persons")
-    lines(x, di$PersonCount, type="b", col="black")
+    di <- deviceData()
+    ggplot(di) +
+      geom_line(aes(DateTimeS, PersonCountS, color=PersonCountS)) +
+      labs(x = "Time", y = "Persons", title = "Visits Over Time")
   })
 }

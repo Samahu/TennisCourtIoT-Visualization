@@ -1,5 +1,15 @@
 library(leaflet)
 
+sbp <- sidebarPanel(
+  
+  selectInput("deviceId", "Device:", structure(db_summary$DeviceID, names=db_summary$deviceName)),
+  selectInput("average", "Average:", structure(c("hour", "day", "week", "month", "quarter", "year"), names=c("Hourly", "Daily", "Weekly", "Monthly", "Quarterly", "Yearly"))),
+  dateRangeInput("dates", 
+                 "Date range",
+                 start = "2019-01-01", 
+                 end = as.character(Sys.Date())),
+  width = 3
+)
 
 navbarPage("Tennis Court Presentation", id="nav",
 
@@ -9,15 +19,13 @@ navbarPage("Tennis Court Presentation", id="nav",
 
       tags$head(includeCSS("styles.css"), includeScript("gomap.js")),
 
-      leafletOutput("map", width="100%", height="50%"),
+      leafletOutput("map", width="100%", height="60%"),
       
-      selectInput("deviceId", "Device:", structure(db_summary$DeviceID, names=db_summary$deviceName)),
-      selectInput("average", "Average:", structure(c("h", "d", "w", "m", "y"), names=c("Hourly", "Daily", "Weekly", "Monthly", "Yearly"))),
-      dateRangeInput("dates", 
-                     "Date range",
-                     start = "2019-01-01", 
-                     end = as.character(Sys.Date())),
-      plotOutput("tsplot", width="100%", height="50%"),
+      
+      
+      sidebarLayout(sidebarPanel = sbp,
+      mainPanel = mainPanel(
+        plotOutput("tsplot", width="100%", height="300"))),
 
       tags$div(id="cite",
         'Data compiled for ', tags$em('Tulsa Tennis Court IoT Project'), '.'
@@ -33,7 +41,5 @@ navbarPage("Tennis Court Presentation", id="nav",
            ),
            hr(),
            DT::dataTableOutput("table")
-  ),
-
-  conditionalPanel("false", icon("crosshair"))
+  )
 )

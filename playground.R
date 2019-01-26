@@ -1,10 +1,19 @@
 library(jsonlite)
+library(ggplot2)
+library(lubridate)
 
 dev1_data <- db_data %>%
   filter(DeviceID == "dev-1")
 
-dev1_data$PersonCount <- lapply(dev1_data$Classes, extractPersonCount)
-x <- as.POSIXlt(dev1_data$DateTime)
-plot(x, dev1_data$PersonCount, main = "Sample Time Series", xlab = "Time", ylab = "Persons")
-lines(x, dev1_data$PersonCount, type="b", col="black")
-#legend("top", legend = "Activity", col = "black", lty = 1)
+
+dev2_data <- dev1_data %>%
+  filter(DateTimeT >= as.POSIXct("2019-01-01"), DateTimeT <= as.POSIXct("2019-01-06"))
+
+dev2_data$DateTimeS <- as.POSIXct(dev2_data$DateTimeT, format="%d/%m/%y %H")
+
+dev2_data <- dev2_data %>%
+  group_by(DateTimeS) %>%
+  summarise(deviceName = first(DeviceName), PersonCountS = sum(PersonCount))
+
+ggplot(dev2_data) +
+  geom_point(aes(DateTimeS, PersonCountS))

@@ -7,16 +7,16 @@ navbarPage("Tennis Court Presentation", id="nav",
            
     div(class="outer",
 
-      tags$head(
-        # Include custom CSS
-        includeCSS("styles.css"),
-        includeScript("gomap.js")
-      ),
+      tags$head(includeCSS("styles.css"), includeScript("gomap.js")),
 
-      # If not using custom CSS, set height of leafletOutput to a number instead of percent
       leafletOutput("map", width="100%", height="50%"),
       
-      textInput("deviceId", "Device", "dev-1"),
+      selectInput("deviceId", "Device:", structure(db_summary$DeviceID, names=db_summary$deviceName)),
+      selectInput("average", "Average:", structure(c("h", "d", "w", "m", "y"), names=c("Hourly", "Daily", "Weekly", "Monthly", "Yearly"))),
+      dateRangeInput("dates", 
+                     "Date range",
+                     start = "2019-01-01", 
+                     end = as.character(Sys.Date())),
       plotOutput("tsplot", width="100%", height="50%"),
 
       tags$div(id="cite",
@@ -28,7 +28,7 @@ navbarPage("Tennis Court Presentation", id="nav",
   tabPanel("Data explorer",
            fluidRow(
              column(3,
-                    selectInput("DevicesId", "DeviceID", c("All Ids"="", structure(state.abb, names=state.name), "Washington, DC"="DC"), multiple=FALSE)
+                    selectInput("DevicesId", "DeviceID", structure(db_summary$DeviceID, names=db_summary$deviceName), multiple=FALSE)
              )
            ),
            hr(),

@@ -13,7 +13,7 @@ dev2_data$DateTimeS <- as.POSIXct(dev2_data$DateTimeT, format="%d/%m/%y %H")
 
 dev2_data <- dev2_data %>%
   group_by(DateTimeS) %>%
-  summarise(deviceName = first(DeviceName), PersonCountS = sum(PersonCount))
+  summarise(deviceName = first(DeviceName), PersonCountS = sum(Classes.person, na.rm = TRUE))
 
 ggplot(dev2_data) +
   geom_point(aes(DateTimeS, PersonCountS))

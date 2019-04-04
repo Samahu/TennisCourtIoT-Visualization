@@ -21,7 +21,7 @@ function(input, output, session) {
 
     dev_data_s <- dev_data %>%
       group_by(DateTimeS) %>%
-      summarise(deviceName = first(DeviceName), PersonCountS = summary_func(PersonCount))
+      summarise(deviceName = first(DeviceName), PersonCountS = summary_func(Classes.person, na.rm = TRUE))
     
     return (dev_data_s)
   })

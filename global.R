@@ -19,6 +19,9 @@ if (Sys.getenv("MONGODB_PASSWORD") == '') {
 db = mongo(url = connUrl, collection = "deviceevents")
 db_data = collect(db$find('{}'))
 db_data <- jsonlite::flatten(db_data)
+matches <- stringr::str_match(names(db_data), "Classes.(.+)")
+db_class_ids_idx <- which(!is.na(matches[, 2]))
+db_class_ids <- matches[class_ids_idx, 2]
 
 db_data$DateTimeT <- as.POSIXct(db_data$DateTime)
 

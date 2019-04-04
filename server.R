@@ -21,16 +21,17 @@ function(input, output, session) {
 
     dev_data_s <- dev_data %>%
       group_by(DateTimeS) %>%
-      summarise(deviceName = first(DeviceName), SummarizedClass = summary_func(switch(input$classId,
-                                                                                   "person" = Classes.person,
-                                                                                   "dog" = Classes.dog,
-                                                                                   "cat" = Classes.cat,
-                                                                                   "bird" = Classes.bird,
-                                                                                   "car" = Classes.car,
-                                                                                   "motorcycle" = Classes.motorcycle,
-                                                                                   "bicycle" = Classes.bicycle,
-                                                                                   "bus" = Classes.bus,
-                                                                                   "truck" = Classes.truck), na.rm = TRUE))
+      summarise(deviceName = first(DeviceName),
+                SummarizedClass = summary_func(switch(input$classId,
+                                                     "person" = Classes.person,
+                                                     "dog" = Classes.dog,
+                                                     "cat" = Classes.cat,
+                                                     "bird" = Classes.bird,
+                                                     "car" = Classes.car,
+                                                     "motorcycle" = Classes.motorcycle,
+                                                     "bicycle" = Classes.bicycle,
+                                                     "bus" = Classes.bus,
+                                                     "truck" = Classes.truck), na.rm = TRUE))
     
     return (dev_data_s)
   })
@@ -61,8 +62,9 @@ function(input, output, session) {
   
   output$tsplot <- renderPlot({
     di <- deviceData()
+    di$SummarizedClass[is.na(di$SummarizedClass)] <- 0
     ggplot(di) +
-      geom_line(aes(DateTimeS, SummarizedClass, color=SummarizedClass), na.rm = TRUE) +
+      geom_line(aes(DateTimeS, SummarizedClass, color=SummarizedClass)) +
       labs(x = "Time", y = input$classId, title = "Visits Over Time")
   })
 }

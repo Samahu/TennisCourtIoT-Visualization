@@ -1,20 +1,42 @@
 library(mongolite)
 library(leaflet)
 library(dplyr)
-library(ggplot2)
+library(dotenv)
 
-extractPersonCount <- function(x) {
+load_dot_env(file = ".env.development")
+
+extractPersonCount_Str <- function(x) {
   v <- gsub("\'", "\"", x)
   v <- jsonlite::fromJSON(v)
   v <- ifelse(is.null(v$person), 0, as.numeric(v$person))
   return (v)
 }
 
-db = mongo(url = "mongodb://localhost/TulsaTennisCourts", collection = "deviceevents")
+extractPersonCount <- function(x) {
+  v <- ifelse(is.na(x), 0, as.numeric(x))
+  return (v)
+}
+
+if (Sys.getenv("MONGODB_PASSWORD") == '') {
+  connUrl = paste0("mongodb://",
+                   Sys.getenv("MONGODB_ACCOUNT"), Sys.getenv("MONGODB_BASE_URL"), ":", Sys.getenv("MONGODB_PORT"), "/",
+                   Sys.getenv("MONGODB_DBNAME"))
+} else {
+  connUrl = paste0("mongodb://",
+                   Sys.getenv("MONGODB_ACCOUNT"), ":", Sys.getenv("MONGODB_PASSWORD"), "@",
+                   Sys.getenv("MONGODB_ACCOUNT"), Sys.getenv("MONGODB_BASE_URL"), ":", Sys.getenv("MONGODB_PORT"), "/",
+                   Sys.getenv("MONGODB_DBNAME"), "?ssl=true")
+}
+
+db = mongo(url = connUrl, collection = "deviceevents")
 db_data = collect(db$find('{}'))
 
-db_data$PersonCount <- sapply(db_data$Classes, extractPersonCount)
+db_data$PersonCount <- sapply(db_data$Classes$person, extractPersonCount)
 db_data$DateTimeT <- as.POSIXct(db_data$DateTime)
+
+#TODO: A workaround to get reactive expression be able to execute without a warning - remove Classes column.
+drops <- c("Classes")
+db_data <- db_data[, !(names(db_data) %in% drops)]
 
 db_summary <- db_data %>%
   group_by(DeviceID) %>%

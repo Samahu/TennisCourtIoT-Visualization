@@ -1,9 +1,10 @@
-library(leaflet)
 library(RColorBrewer)
 library(scales)
 library(lattice)
 library(dplyr)
 library(htmltools)
+library(ggplot2)
+library(lubridate)
 
 function(input, output, session) {
   

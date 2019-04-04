@@ -1,4 +1,3 @@
-library(leaflet)
 
 sbp <- sidebarPanel(
   
@@ -31,8 +30,10 @@ navbarPage("Tennis Court Presentation", id="nav",
         'Data compiled for ', tags$em('Tulsa Tennis Court IoT Project'), '.'
       )
     )
-  ),
+  )
   
+  ,
+
   tabPanel("Data explorer",
            fluidRow(
              column(3,

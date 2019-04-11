@@ -7,7 +7,7 @@
 # Introduction
 Data Visualization for the TennisCourtIoT project, utilizing R programming, MongoDB and ShinyApps.
 
-#Live Demo
+# Live Demo
 https://samahu.shinyapps.io/TennisCourtIoT-Visualization/
 
 # Screenshots

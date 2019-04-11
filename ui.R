@@ -6,7 +6,7 @@ sbp <- sidebarPanel(
   selectInput("average", "Average:", structure(c("hour", "day", "week", "month", "quarter", "year"), names=c("Hourly", "Daily", "Weekly", "Monthly", "Quarterly", "Yearly"))),
   dateRangeInput("dates", 
                  "Date range",
-                 start = "2019-01-01", 
+                 start = "2019-04-01", 
                  end = as.character(Sys.Date())),
   width = 3
 )
@@ -33,15 +33,15 @@ navbarPage("Tennis Court Presentation", id="nav",
     )
   )
   
-  ,
-
-  tabPanel("Data explorer",
-           fluidRow(
-             column(3,
-                    selectInput("DevicesId", "DeviceID", structure(db_summary$DeviceID, names=db_summary$deviceName), multiple=FALSE)
-             )
-           ),
-           hr(),
-           DT::dataTableOutput("table")
-  )
+  # ,
+  # 
+  # tabPanel("Data explorer",
+  #          fluidRow(
+  #            column(3,
+  #                   selectInput("DevicesId", "DeviceID", structure(db_summary$DeviceID, names=db_summary$deviceName), multiple=FALSE)
+  #            )
+  #          ),
+  #          hr(),
+  #          DT::dataTableOutput("table")
+  # )
 )

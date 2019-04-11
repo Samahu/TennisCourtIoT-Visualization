@@ -22,7 +22,7 @@ function(input, output, session) {
     dev_data_s <- dev_data %>%
       group_by(DateTimeS) %>%
       summarise(deviceName = first(DeviceName),
-                SummarizedClass = summary_func(switch(input$classId,
+                visits = summary_func(switch(input$classId,
                                                      "person" = Classes.person,
                                                      "dog" = Classes.dog,
                                                      "cat" = Classes.cat,
@@ -54,17 +54,28 @@ function(input, output, session) {
     updateSelectInput(session, "deviceId", selected = input$map_marker_click$id)
   })
   
-  output$table <- DT::renderDataTable({
-    df <- db_summary
-    action <- DT::dataTableAjax(session, df)
-    DT::datatable(df, options = list(ajax = list(url = action)), escape = FALSE)
-  })
+  # output$table <- DT::renderDataTable({
+  #   df <- db_summary
+  #   action <- DT::dataTableAjax(session, df)
+  #   DT::datatable(df, options = list(ajax = list(url = action)), escape = FALSE)
+  # })
   
   output$tsplot <- renderPlot({
     di <- deviceData()
-    di$SummarizedClass[is.na(di$SummarizedClass)] <- 0
-    ggplot(di) +
-      geom_line(aes(DateTimeS, SummarizedClass, color=SummarizedClass)) +
-      labs(x = "Time", y = input$classId, title = "Visits Over Time")
+    di$visits[is.na(di$visits)] <- 0
+    
+    custom_date_break <- switch(input$average,
+                                "hour" = "6 hour",
+                                "day" = "1 day",
+                                "week" = "1 week",
+                                "month" = "1 month",
+                                "quarter" = "1 quarter",
+                                "year" = "1 year")
+    
+    ggplot(di, aes(DateTimeS, visits)) +
+      geom_bar(stat = "identity") +
+      labs(x = "Time", y = input$classId, title = "Visits Over Time") +
+      scale_x_datetime(date_breaks = custom_date_break, labels = date_format("%b %d - %H:%M")) +
+      theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
   })
 }

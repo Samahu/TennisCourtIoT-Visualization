@@ -1,7 +1,7 @@
 # TennisCourtIoT-Visualization
 
 - [Introduction](#introduction)
-- [Live Demo](#purpose-demo)
+- [Live Demo](#live-demo)
 - [Screenshots](#screenshots)
 
 # Introduction

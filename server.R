@@ -17,7 +17,7 @@ function(input, output, session) {
     
     dev_data$DateTimeS <- round_date(dev_data$DateTimeT, input$average)
     
-    summary_func <- ifelse(TRUE, mean, sum)
+    summary_func <- ifelse(FALSE, mean, sum)
 
     dev_data_s <- dev_data %>%
       group_by(DateTimeS) %>%

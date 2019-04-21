@@ -7,7 +7,7 @@ sbp <- sidebarPanel(
   dateRangeInput("dates", 
                  "Date range",
                  start = "2019-04-01", 
-                 end = as.character(Sys.Date())),
+                 end = as.character(Sys.Date()+1)),
   width = 3
 )
 

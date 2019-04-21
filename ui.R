@@ -1,7 +1,7 @@
 
 sbp <- sidebarPanel(
   
-  selectInput("deviceId", "Device:", structure(db_summary$DeviceID, names=db_summary$deviceName)),
+  selectInput("deviceId", "Device:", structure(db_summary$DeviceId, names=db_summary$deviceName)),
   selectInput("classId", "Class:", db_class_ids, selected = "person"),
   selectInput("average", "Average:", structure(c("hour", "day", "week", "month", "quarter", "year"), names=c("Hourly", "Daily", "Weekly", "Monthly", "Quarterly", "Yearly"))),
   dateRangeInput("dates", 
@@ -38,7 +38,7 @@ navbarPage("Tennis Court Presentation", id="nav",
   # tabPanel("Data explorer",
   #          fluidRow(
   #            column(3,
-  #                   selectInput("DevicesId", "DeviceID", structure(db_summary$DeviceID, names=db_summary$deviceName), multiple=FALSE)
+  #                   selectInput("DevicesId", "DeviceId", structure(db_summary$DeviceID, names=db_summary$deviceName), multiple=FALSE)
   #            )
   #          ),
   #          hr(),

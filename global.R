@@ -23,6 +23,7 @@ db_data <- jsonlite::flatten(db_data)
 matches <- stringr::str_match(names(db_data), "Classes.(.+)")
 db_class_ids_idx <- which(!is.na(matches[, 2]))
 db_class_ids <- matches[db_class_ids_idx, 2]
+db_data$DeviceName <- NULL
 
 db_data$DateTimeT <- as.POSIXct(db_data$DateTime)
 

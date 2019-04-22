@@ -63,6 +63,7 @@ function(input, output, session) {
   output$tsplot <- renderPlot({
     di <- deviceData()
     di$visits[is.na(di$visits)] <- 0
+    di$visits <- round(di$visits)
     
     custom_date_break <- switch(input$average,
                                 "hour" = "6 hour",

@@ -5,6 +5,8 @@ library(dotenv)
 
 load_dot_env(file = ".env.development")
 
+Sys.setenv(TZ="America/Chicago")  # TODO: hardcoded for now. However, this should depend on the location of the device.
+
 if (Sys.getenv("MONGODB_PASSWORD") == '') {
   connUrl = paste0("mongodb://",
                    Sys.getenv("MONGODB_ACCOUNT"), Sys.getenv("MONGODB_BASE_URL"), ":", Sys.getenv("MONGODB_PORT"), "/",

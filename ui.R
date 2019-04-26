@@ -21,9 +21,8 @@ navbarPage("Tennis Court Presentation", id="nav",
              useShinyjs(),
              leafletOutput("map"),
              sidebarLayout(sidebarPanel = sbp, mainPanel = mainPanel(id="MainPanel", plotOutput("tsplot", width="100%", height="300"))),
-
-            tags$div(id="cite", 'Data compiled for ', tags$em('Tulsa Tennis Court IoT Project'), '.')
-            )
+             tags$div(id="cite", 'Data compiled for ', tags$em('Tulsa Tennis Court IoT Project.'), ' Last Update: ', max(db_data$DateTimeT))
+           )
       )
   
   # ,

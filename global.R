@@ -36,8 +36,3 @@ devicesDB <- function() {
 }
 
 db_devices <- devicesDB()
-db_data <- db_data %>% left_join(db_devices, by = "DeviceId")
-
-db_summary <- db_data %>%
-  group_by(DeviceId) %>%
-  summarise(deviceName = first(DeviceName), latitude = mean(Latitude), longitude = mean(Longitude), events_count = n())

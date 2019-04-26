@@ -16,13 +16,11 @@ function(input, output, session) {
              DateTimeT <= as.POSIXct(input$dates[2]))
     
     dev_data$DateTimeS <- round_date(dev_data$DateTimeT, input$average)
-    
-    summary_func <- ifelse(T, mean, sum)
 
     dev_data_s <- dev_data %>%
       group_by(DateTimeS) %>%
-      summarise(deviceName = first(DeviceName),
-                visits = summary_func(switch(input$classId,
+      summarise(first(db_devices[db_devices$DeviceId == input$deviceId]$DeviceName),
+                visits = mean(switch(input$classId,
                                                      "person" = Classes.person,
                                                      "dog" = Classes.dog,
                                                      "cat" = Classes.cat,
@@ -42,8 +40,8 @@ function(input, output, session) {
         urlTemplate = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
         attribution = 'Maps by <a href="http://www.mapbox.com/">Mapbox</a>'
       ) %>%
-      addMarkers(layerId=db_summary$DeviceId, lng=db_summary$longitude, lat=db_summary$latitude,
-                       popup = htmlEscape(db_summary$deviceName))
+      addMarkers(layerId=db_devices$DeviceId, lng=db_devices$Longitude, lat=db_devices$Latitude,
+                       popup = htmlEscape(db_devices$DeviceName))
   })
   
   observeEvent( input$map_marker_click, {

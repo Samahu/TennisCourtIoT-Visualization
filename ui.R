@@ -19,15 +19,16 @@ navbarPage("Tennis Court Presentation", id="nav",
   tabPanel("Interactive map",
            fluidPage(
              useShinyjs(),
-             leafletOutput("map"),
-             sidebarLayout(sidebarPanel = sbp,
+             fluidRow(leafletOutput("map")),
+             fluidRow(sidebarLayout(sidebarPanel = sbp,
                            mainPanel = mainPanel(id="MainPanel",
                                                  fluidRow(
-                                                   splitLayout(cellWidths = c("60%", "40%"),
+                                                   splitLayout(cellWidths = c("65%", "35%"),
                                                                plotOutput("tsplot", height="400"),
                                                                plotOutput("pieplot"))
-                                                   ))),
-             tags$div(id="cite", 'Data compiled for ',tags$em('Tulsa Tennis Court IoT Project.'), ' Last Update: ', max(db_data$DateTimeT))
+                                                   )))),
+             tags$div(id="cite", 'Data compiled for ',tags$em('Tulsa Tennis Court IoT Project.'), ' Last Update: ', max(db_data$DateTimeT)),
+             tags$head(tags$style(HTML(".shiny-plot-output { overflow: hidden; }")))
            )
       )
 )

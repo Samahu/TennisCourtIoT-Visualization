@@ -54,16 +54,10 @@ function(input, output, session) {
     updateSelectInput(session, "deviceId", selected = input$map_marker_click$id)
   })
   
-  # output$table <- DT::renderDataTable({
-  #   df <- db_summary
-  #   action <- DT::dataTableAjax(session, df)
-  #   DT::datatable(df, options = list(ajax = list(url = action)), escape = FALSE)
-  # })
-  
   capitalize_first_letter_of_string  <- function(value) {
     paste0(toupper(substr(value, 1, 1)), substr(value, 2, nchar(value)))
   }
-  
+
   output$tsplot <- renderPlot({
     di <- deviceData()
     di$visits[is.na(di$visits)] <- 0
@@ -89,5 +83,39 @@ function(input, output, session) {
       labs(x = "Time", y = y_label, title = "Average Visits") +
       scale_x_datetime(date_breaks = custom_date_break, labels = date_format("%b %d - %H:%M")) +
       theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
+  })
+  
+  output$pieplot <- renderPlot({
+    
+    di <- deviceData()
+    di$visits[is.na(di$visits)] <- 0
+    
+    # assign the number of breaks in propertion to the number of samples
+    samples <- seq.POSIXt(as.POSIXct(input$dates[1], tz=getOption("tz")),
+                          as.POSIXct(input$dates[2], tz=getOption("tz")),
+                          by=input$average)
+    samples_count <- length(samples)
+    actual_visits <- nrow(di[di$visits!=0,]) # only count records that have actual visits
+    total <- samples_count + actual_visits
+
+    df <- data.frame(
+      "Utilization" = c("Occupied", "Free"),
+      "Value" = c(actual_visits / total, (samples_count - actual_visits) / total)
+    )
+    
+    footnote = if (input$average=="hour") "Hourly utilization excludes night times between 10 pm to 6 am" else ""
+    
+    #print(paste("total:", samples_count, "records", nrow(di)))
+
+    ggplot(df, aes(x="", y=Value, fill=Utilization)) +
+      geom_bar(width = 1, stat = "identity") +
+      coord_polar("y", start=0) +
+      geom_text(aes(label = paste0(round(Value*100), "%")), position = position_stack(vjust = 0.5)) +
+      labs(x = NULL, y = NULL, fill = NULL, title = "Court Utilization", caption = footnote) +
+      theme_classic() +
+      theme(axis.line = element_blank(),
+            axis.text = element_blank(),
+            axis.ticks = element_blank(),
+            plot.title = element_text(hjust = 0.5, color = "#666666"))
   })
 }

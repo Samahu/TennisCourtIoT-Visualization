@@ -8,7 +8,7 @@
 Data Visualization for the TennisCourtIoT project, utilizing R programming, MongoDB and ShinyApps.
 
 # Live Demo
-https://samahu.shinyapps.io/TennisCourtIoT-Visualization/
+https://tennis-courts-iot.azurewebsites.net
 
 # Screenshots
 Screenshots of the current dashboard:

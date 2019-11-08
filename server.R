@@ -65,7 +65,6 @@ function(input, output, session) {
   output$tsplot <- renderPlot({
     di <- deviceData()
     di$visits[is.na(di$visits)] <- 0
-    di$visits <- round(di$visits)
     
     # assign the number of breaks in propertion to the number of samples
     samples <- seq.POSIXt(as.POSIXct(input$dates[1], tz=getOption("tz")),

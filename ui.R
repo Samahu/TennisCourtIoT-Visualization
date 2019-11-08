@@ -6,7 +6,7 @@ sbp <- sidebarPanel(id="sidePanel",
   
   selectInput("deviceId", "Device:", structure(db_devices$DeviceId, names=db_devices$DeviceName)),
   selectInput("classId", "Class:", db_class_ids, selected = "person"),
-  selectInput("average", "Average:", structure(c("hour", "day", "week", "month", "quarter", "year"), names=c("Hourly", "Daily", "Weekly", "Monthly", "Quarterly", "Yearly"))),
+  selectInput("average", "Average:", structure(c("hour", "day", "week", "month", "year"), names=c("Hourly", "Daily", "Weekly", "Monthly", "Yearly"))),
   dateRangeInput("dates", 
                  "Date range",
                  start = "2019-04-01", 

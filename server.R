@@ -19,17 +19,17 @@ function(input, output, session) {
 
     dev_data_s <- dev_data %>%
       group_by(DateTimeS) %>%
-      summarise(first(db_devices[db_devices$DeviceId == input$deviceId]$DeviceName),
+      summarise(first(db_devices[db_devices$DeviceId == input$deviceId, ]$DeviceName),
                 visits = mean(switch(input$classId,
-                                                     "person" = Classes.person,
-                                                     "dog" = Classes.dog,
-                                                     "cat" = Classes.cat,
-                                                     "bird" = Classes.bird,
-                                                     "car" = Classes.car,
-                                                     "motorcycle" = Classes.motorcycle,
-                                                     "bicycle" = Classes.bicycle,
-                                                     "bus" = Classes.bus,
-                                                     "truck" = Classes.truck), na.rm = TRUE))
+                                     "person" = Classes.person,
+                                     "dog" = Classes.dog,
+                                     "cat" = Classes.cat,
+                                     "bird" = Classes.bird,
+                                     "car" = Classes.car,
+                                     "motorcycle" = Classes.motorcycle,
+                                     "bicycle" = Classes.bicycle,
+                                     "bus" = Classes.bus,
+                                     "truck" = Classes.truck), na.rm = TRUE))
     
     return (dev_data_s)
   })
@@ -58,22 +58,32 @@ function(input, output, session) {
   #   DT::datatable(df, options = list(ajax = list(url = action)), escape = FALSE)
   # })
   
+  capitalize_first_letter_of_string  <- function(value) {
+    paste0(toupper(substr(value, 1, 1)), substr(value, 2, nchar(value)))
+  }
+  
   output$tsplot <- renderPlot({
     di <- deviceData()
     di$visits[is.na(di$visits)] <- 0
     di$visits <- round(di$visits)
     
-    custom_date_break <- switch(input$average,
-                                "hour" = "6 hour",
-                                "day" = "1 day",
-                                "week" = "1 week",
-                                "month" = "1 month",
-                                "quarter" = "1 quarter",
-                                "year" = "1 year")
+    # assign the number of breaks in propertion to the number of samples
+    samples <- seq.POSIXt(as.POSIXct(input$dates[1]), as.POSIXct(input$dates[2]), by=input$average)
+    samples_count <- length(samples)
+    
+    divider <- 1
+    max_breaks <- 30
+    if (samples_count > max_breaks) {
+      divider <- round(samples_count / max_breaks)
+    }
+    
+    custom_date_break <- paste(divider, input$average)
+    y_label <- capitalize_first_letter_of_string(input$classId)
+    y_label <- paste0(y_label, "(s)")
     
     ggplot(di, aes(DateTimeS, visits)) +
       geom_bar(stat = "identity") +
-      labs(x = "Time", y = input$classId, title = "Visits Over Time") +
+      labs(x = "Time", y = y_label, title = "Average Visits") +
       scale_x_datetime(date_breaks = custom_date_break, labels = date_format("%b %d - %H:%M")) +
       theme(axis.text.x = element_text(angle = 25, vjust = 1.0, hjust = 1.0))
   })

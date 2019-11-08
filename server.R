@@ -12,8 +12,8 @@ function(input, output, session) {
     
     dev_data <- db_data %>%
       filter(DeviceId == input$deviceId,
-             DateTimeT >= as.POSIXct(input$dates[1]),
-             DateTimeT <= as.POSIXct(input$dates[2]))
+             DateTimeT >= as.POSIXct(input$dates[1], tz=getOption("tz")),
+             DateTimeT <= as.POSIXct(input$dates[2], tz=getOption("tz")))
     
     dev_data$DateTimeS <- round_date(dev_data$DateTimeT, input$average)
 
@@ -68,7 +68,9 @@ function(input, output, session) {
     di$visits <- round(di$visits)
     
     # assign the number of breaks in propertion to the number of samples
-    samples <- seq.POSIXt(as.POSIXct(input$dates[1]), as.POSIXct(input$dates[2]), by=input$average)
+    samples <- seq.POSIXt(as.POSIXct(input$dates[1], tz=getOption("tz")),
+                          as.POSIXct(input$dates[2], tz=getOption("tz")),
+                          by=input$average)
     samples_count <- length(samples)
     
     divider <- 1
